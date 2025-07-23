@@ -3,18 +3,14 @@ const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 const cors = require('cors');
 const userRoutes = require('./routers/routers');
-
+const corsOrigin=require("./cors/cors")
 dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 5000;
 
 // ✅ Enable full CORS
-app.use(cors({
-  origin: ['https://react-node-zeta.vercel.app', 'http://localhost:5173'],
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  credentials: true,
-}));
+app.use(cors(corsOrigin));
 
 // Middleware
 app.use(express.json());
