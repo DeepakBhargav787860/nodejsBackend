@@ -4,7 +4,7 @@ import dotenv from 'dotenv'
 import cors from 'cors'
 import userRoutes from './routers/routers.js'
 import corsOrigin from './cors/cors.js'
-
+import matricMiddleware from "./monitoringTool/monitor.js"
 dotenv.config();
 
 const app = express();
@@ -15,9 +15,11 @@ app.use(cors(corsOrigin()));
 
 // Middleware
 app.use(express.json());
-
+//matric
+app.use(matricMiddleware)
 // Routes
 app.use('/users', userRoutes);
+
 
 // MongoDB connection
 mongoose.connect(process.env.MONGODB_URI)
