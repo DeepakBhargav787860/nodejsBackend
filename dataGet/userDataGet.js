@@ -10,6 +10,8 @@ import User from "../models/model.js"
 
 getRouter.post("/getDataById",async(req,res)=>{
      try {
+      // const id=req.body
+      // console.log(id)
       const data=await User.find();
      res.json(data)  
      }  catch(err) {
