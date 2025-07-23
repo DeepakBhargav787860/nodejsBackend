@@ -1,9 +1,10 @@
-const express = require('express');
-const mongoose = require('mongoose');
-const dotenv = require('dotenv');
-const cors = require('cors');
-const userRoutes = require('./routers/routers');
-const corsOrigin=require("./cors/cors")
+import express from 'express'
+import mongoose from 'mongoose'
+import dotenv from 'dotenv'
+import cors from 'cors'
+import userRoutes from './routers/routers.js'
+import corsOrigin from './cors/cors.js'
+
 dotenv.config();
 
 const app = express();
@@ -22,7 +23,7 @@ app.use('/users', userRoutes);
 mongoose.connect(process.env.MONGODB_URI)
   .then(() => {
     console.log('✅ Connected to MongoDB Atlas');
-    app.listen(PORT,'0.0.0.0', () => {
+    app.listen({ port: PORT, host: '0.0.0.0' }, () => {
       console.log(`🚀 Server running on http://localhost:${PORT}`);
     });
   })

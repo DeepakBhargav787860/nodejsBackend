@@ -7,4 +7,4 @@ const CorsFun=()=>{
 }
 
 }
-module.exports=CorsFun
+export default CorsFun

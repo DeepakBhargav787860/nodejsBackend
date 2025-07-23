@@ -1,5 +1,5 @@
-const mongoose = require('mongoose');
 
+import mongoose from 'mongoose'
 const userSchema = new mongoose.Schema({
   name: {
     type: String,
@@ -10,10 +10,14 @@ const userSchema = new mongoose.Schema({
     required: true,
     unique: true,
   },
+  filePath:{
+  type:String,
+  require:true
+  },
   createdAt: {
     type: Date,
     default: Date.now,
   },
 });
 
-module.exports = mongoose.model('User', userSchema);
+export default mongoose.model('User', userSchema);
