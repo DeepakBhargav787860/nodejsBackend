@@ -16,6 +16,7 @@ const PORT = process.env.PORT || 5000;
 app.use(cors(corsOrigin()));
 // Middleware
 app.use(express.json());
+app.set('trust proxy', true);
 //matric
 app.use(matricMiddleware)
 //logger
