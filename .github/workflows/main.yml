@@ -12,14 +12,27 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
+        with:
+          fetch-depth: 2 # fetch 2 commits to allow comparison
+
+      - name: Get last commit info
+        id: last_commit
+        run: |
+          echo "🔍 Getting source branch..."
+          AUTHOR_BRANCH=$(git log -2 --pretty=format:'%D' | grep -oE 'origin/[^, ]+' | grep -v 'origin/main' | head -n 1 | sed 's|origin/||')
+          echo "SOURCE_BRANCH=${AUTHOR_BRANCH:-unknown}" >> $GITHUB_ENV
+          echo "branch=${AUTHOR_BRANCH:-unknown}" >> $GITHUB_OUTPUT
 
       - name: Run build
         run: echo "🔨 Build is running..."
 
       - name: Notify Slack
-        if: always() # This ensures it runs even if the build fails
+        if: always() # runs even if previous steps fail
         uses: rtCamp/action-slack-notify@v2
         env:
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
           SLACK_COLOR: ${{ job.status }}
-          SLACK_MESSAGE: "✅ GitHub build finished with status: ${{ job.status }}"
+          SLACK_MESSAGE: |
+            ✅ GitHub build finished with status: ${{ job.status }}
+            🧾 Code was merged from branch: ${{ steps.last_commit.outputs.branch }}
+
