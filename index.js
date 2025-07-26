@@ -12,7 +12,7 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// ✅ Enable full CORSs
+// ✅ Enable full CORS
 app.use(cors(corsOrigin()));
 // Middleware
 app.use(express.json());
