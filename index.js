@@ -25,7 +25,7 @@ app.use(requestLogger)
 app.use('/users', userRoutes);
 
 
-// MongoDB connections
+// MongoDB connection
 mongoose.connect(process.env.MONGODB_URI)
   .then(() => {
   logger.info('✅ Connected to MongoDB Atlas')
