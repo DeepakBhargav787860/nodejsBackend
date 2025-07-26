@@ -13,26 +13,38 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
         with:
-          fetch-depth: 2 # fetch 2 commits to allow comparison
+          fetch-depth: 0 # fetch full history to detect merge properly
 
-      - name: Get last commit info
-        id: last_commit
+      - name: Extract branch and commit message
+        id: extract_info
         run: |
-          echo "🔍 Getting source branch..."
-          AUTHOR_BRANCH=$(git log -2 --pretty=format:'%D' | grep -oE 'origin/[^, ]+' | grep -v 'origin/main' | head -n 1 | sed 's|origin/||')
-          echo "SOURCE_BRANCH=${AUTHOR_BRANCH:-unknown}" >> $GITHUB_ENV
-          echo "branch=${AUTHOR_BRANCH:-unknown}" >> $GITHUB_OUTPUT
+          echo "🔍 Extracting source branch and commit message..."
+
+          # Try to find the merged branch name from the commit message or refs
+          MERGE_BRANCH=$(git log -1 --pretty=%B | grep -oE 'Merge pull request #[0-9]+ from [^ ]+' | awk '{print $NF}' || true)
+          
+          # Fallback to unknown if not found
+          MERGE_BRANCH=${MERGE_BRANCH:-unknown}
+
+          # Get commit message
+          COMMIT_MSG=$(git log -1 --pretty=%s)
+
+          echo "SOURCE_BRANCH=$MERGE_BRANCH" >> $GITHUB_ENV
+          echo "COMMIT_MSG=$COMMIT_MSG" >> $GITHUB_ENV
+
+          echo "branch=$MERGE_BRANCH" >> $GITHUB_OUTPUT
+          echo "message=$COMMIT_MSG" >> $GITHUB_OUTPUT
 
       - name: Run build
         run: echo "🔨 Build is running..."
 
       - name: Notify Slack
-        if: always() # runs even if previous steps fail
+        if: always()
         uses: rtCamp/action-slack-notify@v2
         env:
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
           SLACK_COLOR: ${{ job.status }}
           SLACK_MESSAGE: |
             ✅ GitHub build finished with status: ${{ job.status }}
-            🧾 Code was merged from branch: ${{ steps.last_commit.outputs.branch }}
-
+            🔀 Code was merged from branch: `${{ steps.extract_info.outputs.branch }}`
+            📝 Commit message: `${{ steps.extract_info.outputs.message }}`
