@@ -22,4 +22,4 @@ jobs:
         env:
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
           SLACK_COLOR: ${{ job.status }}
-          SLACK_MESSAGE: "✅ GitHub build finished with status: ${{ job.status }}"
+          SLACK_MESSAGE: "✅ GitHub build finished with status code: ${{ job.status }}"
