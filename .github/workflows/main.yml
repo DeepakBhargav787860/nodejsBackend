@@ -36,7 +36,9 @@ jobs:
           echo "message=$COMMIT_MSG" >> $GITHUB_OUTPUT
 
       - name: Run build
-        run: echo "🔨 Build is running..."
+        run: |
+          echo "🔨 Installing dependencies..."
+          npm install
 
       - name: Notify Slack
         if: always()
@@ -48,3 +50,8 @@ jobs:
             ✅ GitHub build finished with status: ${{ job.status }}
             🔀 Code was merged from branch: `${{ steps.extract_info.outputs.branch }}`
             📝 Commit message: `${{ steps.extract_info.outputs.message }}`
+
+      - name: Deploy to Render
+        run: |
+          echo "🚀 Deploying to Render via webhook..."
+          curl -X POST https://api.render.com/deploy/srv-d23j1d15pdvs73a0ns1g?key=ehlc2bdS3-I
